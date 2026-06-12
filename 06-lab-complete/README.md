@@ -44,7 +44,7 @@ Kết hợp TẤT CẢ những gì đã học trong 1 project hoàn chỉnh.
 
 ```bash
 # 1. Setup
-cp .env.example .env
+cp .env.example .env.local
 
 # 2. Chạy với Docker Compose
 docker compose up
@@ -98,3 +98,17 @@ python check_production_ready.py
 ```
 
 Script này kiểm tra tất cả items trong checklist và báo cáo những gì còn thiếu.
+## Windows / PowerShell Commands
+
+```powershell
+Copy-Item .env.example .env.local
+docker compose up
+Invoke-RestMethod -Method Get -Uri "http://localhost/health"
+
+$apiKey = (Get-Content .env.local | Select-String '^AGENT_API_KEY=').ToString().Split('=')[1]
+Invoke-RestMethod -Method Post `
+  -Uri "http://localhost/ask" `
+  -Headers @{ "X-API-Key" = $apiKey } `
+  -ContentType "application/json" `
+  -Body (@{ question = "What is deployment?" } | ConvertTo-Json)
+```

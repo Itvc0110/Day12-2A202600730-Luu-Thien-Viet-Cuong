@@ -707,3 +707,24 @@ USER appuser
 ---
 
 **Keep this handy during the lab! 📌**
+## Windows / PowerShell Equivalents
+
+```powershell
+# Replace common bash helpers
+Get-Content README.md
+Get-ChildItem
+Copy-Item .env.example .env
+$env:AGENT_API_KEY = "secret"
+
+# Docker volume from current folder
+docker run -v "${PWD}:/app" -p 8000:8000 <image-name>
+
+# Check port usage
+Get-NetTCPConnection -LocalPort 8000
+
+# Stop a process by PID
+Stop-Process -Id <PID> -Force
+
+# Search text in files
+Select-String -Path .\**\*.md -Pattern "curl"
+```

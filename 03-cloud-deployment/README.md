@@ -60,3 +60,16 @@ production-cloud-run/
 1. Tại sao serverless (Lambda) không phải lúc nào cũng tốt cho AI agent?
 2. "Cold start" là gì? Ảnh hưởng thế nào đến UX?
 3. Khi nào nên upgrade từ Railway lên Cloud Run?
+## Windows / PowerShell Commands
+
+```powershell
+cd railway
+npm i -g @railway/cli
+railway login
+railway init
+railway up
+railway domain
+
+Invoke-RestMethod -Method Get `
+  -Uri "https://your-agent.railway.app/health"
+```

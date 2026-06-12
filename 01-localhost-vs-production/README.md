@@ -12,13 +12,12 @@
 ```
 develop/
 ├── app.py          # ❌ Anti-patterns: hardcode secrets, no config, no health check
-├── .env.example
 └── requirements.txt
 ```
 
 ### Chạy thử
 ```bash
-cd basic
+cd develop
 pip install -r requirements.txt
 python app.py
 # Truy cập: http://localhost:8000
@@ -45,7 +44,7 @@ production/
 
 ### Chạy thử
 ```bash
-cd advanced
+cd production
 pip install -r requirements.txt
 cp .env.example .env
 # Sửa .env nếu cần
@@ -70,3 +69,20 @@ python app.py
 1. Điều gì xảy ra nếu bạn push code với API key hardcode lên GitHub public?
 2. Tại sao stateless quan trọng khi scale?
 3. 12-factor nói "dev/prod parity" — nghĩa là gì trong thực tế?
+## Windows / PowerShell Commands
+
+```powershell
+cd develop
+pip install -r requirements.txt
+python app.py
+
+Invoke-RestMethod -Method Post `
+  -Uri "http://localhost:8000/ask" `
+  -ContentType "application/json" `
+  -Body (@{ question = "Hello" } | ConvertTo-Json)
+
+cd ..\production
+Copy-Item .env.example .env
+pip install -r requirements.txt
+python app.py
+```

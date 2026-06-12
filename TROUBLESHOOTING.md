@@ -858,3 +858,22 @@ print(sys.path)
 ---
 
 **Still stuck? Check the Q&A section in CODE_LAB.md or ask your instructor! 💬**
+## Windows / PowerShell Quick Fixes
+
+```powershell
+# Port 8000 in use
+Get-NetTCPConnection -LocalPort 8000 | Select-Object -ExpandProperty OwningProcess
+Stop-Process -Id <PID> -Force
+
+# Kill a process started from PowerShell
+Stop-Process -Id $PID -Force
+
+# Activate virtual environment
+& .\venv\Scripts\Activate.ps1
+
+# Set environment variable
+$env:AGENT_API_KEY = "secret"
+
+# Read files
+Get-Content requirements.txt
+```

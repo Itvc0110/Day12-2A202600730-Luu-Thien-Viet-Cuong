@@ -13,13 +13,12 @@
 ```
 develop/
 ├── app.py              # Agent với API Key auth
-├── test_auth.py        # Test script
 └── requirements.txt
 ```
 
 ### Chạy thử
 ```bash
-cd basic
+cd develop
 pip install -r requirements.txt
 AGENT_API_KEY=my-secret-key python app.py
 
@@ -50,7 +49,7 @@ production/
 
 ### Chạy thử
 ```bash
-cd advanced
+cd production
 pip install -r requirements.txt
 python app.py
 
@@ -66,7 +65,20 @@ curl -H "Authorization: Bearer <token>" \
      -d '{"question": "what is docker?"}'
 
 # Test rate limit: spam 20 requests liên tiếp
-python test_advanced.py --test rate-limit
+# Lấy token rồi gửi 20 requests — request 11+ sẽ bị chặn (429)
+TOKEN=$(curl -s -X POST http://localhost:8000/auth/token \
+     -H "Content-Type: application/json" \
+     -d '{"username": "student", "password": "demo123"}' \
+     | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
+
+for i in $(seq 1 20); do
+  printf "Request %2d: " $i
+  curl -s -H "Authorization: Bearer $TOKEN" \
+       -X POST http://localhost:8000/ask \
+       -H "Content-Type: application/json" \
+       -d '{"question": "what is docker?"}' \
+       | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('answer','')[:60] if 'answer' in d else f'❌ {d.get(\"detail\",d)}')"
+done
 ```
 
 ---
@@ -89,3 +101,35 @@ Request
 1. Khi nào nên dùng API Key vs JWT vs OAuth2?
 2. Rate limit nên đặt bao nhiêu request/phút cho một AI agent?
 3. Nếu API key bị lộ, bạn phát hiện và xử lý như thế nào?
+## Windows / PowerShell Commands
+
+Nếu bạn chạy trên Windows PowerShell, dùng các lệnh này thay cho các ví dụ `curl` ở trên:
+
+```powershell
+# Basic API key test
+cd develop
+$env:AGENT_API_KEY = "my-secret-key"
+python app.py
+
+Invoke-RestMethod -Method Post `
+  -Uri "http://localhost:8000/ask" `
+  -Headers @{ "X-API-Key" = "my-secret-key" } `
+  -ContentType "application/json" `
+  -Body (@{ question = "hello" } | ConvertTo-Json)
+
+# Advanced JWT token
+cd production
+python app.py
+
+$token = (Invoke-RestMethod -Method Post `
+  -Uri "http://localhost:8000/auth/token" `
+  -ContentType "application/json" `
+  -Body (@{ username = "student"; password = "demo123" } | ConvertTo-Json)
+).access_token
+
+Invoke-RestMethod -Method Post `
+  -Uri "http://localhost:8000/ask" `
+  -Headers @{ Authorization = "Bearer $token" } `
+  -ContentType "application/json" `
+  -Body (@{ question = "what is docker?" } | ConvertTo-Json)
+```

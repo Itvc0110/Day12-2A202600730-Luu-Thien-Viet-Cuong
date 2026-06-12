@@ -29,6 +29,8 @@ git --version
 
 If any command fails, install the missing tool first.
 
+On Windows PowerShell, prefer `Invoke-RestMethod` for HTTP requests and `$env:NAME = "value"` for environment variables.
+
 ---
 
 ## 🚀 Fast Track (30 minutes)
@@ -40,23 +42,24 @@ If any command fails, install the missing tool first.
 cd day12_ha-tang-cloud_va_deployment
 
 # Check structure
-ls
+Get-ChildItem
 # Should see: 01-localhost-vs-production, 02-docker, etc.
 ```
 
 ### Step 2: Run Basic Example (3 minutes)
 
-```bash
+```powershell
 cd 01-localhost-vs-production/develop
 pip install -r requirements.txt
 python app.py
 ```
 
 In another terminal:
-```bash
-curl http://localhost:8000/ask -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"question": "Hello"}'
+```powershell
+Invoke-RestMethod -Method Post `
+  -Uri "http://localhost:8000/ask" `
+  -ContentType "application/json" `
+  -Body (@{ question = "Hello" } | ConvertTo-Json)
 ```
 
 **Expected:** You get a response! 🎉
@@ -65,7 +68,7 @@ curl http://localhost:8000/ask -X POST \
 
 ### Step 3: Docker Basics (5 minutes)
 
-```bash
+```powershell
 cd ../../02-docker/develop
 
 # Build image
@@ -76,10 +79,11 @@ docker run -p 8000:8000 my-agent
 ```
 
 Test again:
-```bash
-curl http://localhost:8000/ask -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"question": "What is Docker?"}'
+```powershell
+Invoke-RestMethod -Method Post `
+  -Uri "http://localhost:8000/ask" `
+  -ContentType "application/json" `
+  -Body (@{ question = "What is Docker?" } | ConvertTo-Json)
 ```
 
 **Expected:** Same response, but now in a container! 🐳
@@ -88,7 +92,7 @@ curl http://localhost:8000/ask -X POST \
 
 ### Step 4: Deploy to Cloud (10 minutes)
 
-```bash
+```powershell
 cd ../../03-cloud-deployment/railway
 
 # Install Railway CLI
@@ -110,40 +114,43 @@ railway domain
 **Expected:** You get a public URL like `https://your-agent.railway.app`
 
 Test it:
-```bash
-curl https://your-agent.railway.app/ask -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"question": "Am I on the cloud?"}'
+```powershell
+Invoke-RestMethod -Method Post `
+  -Uri "https://your-agent.railway.app/ask" `
+  -ContentType "application/json" `
+  -Body (@{ question = "Am I on the cloud?" } | ConvertTo-Json)
 ```
 
 **Expected:** Response from the cloud! 🌐
 
 ### Step 5: Add Security (10 minutes)
 
-```bash
+```powershell
 cd ../../04-api-gateway/develop
 
 # Set API key
-export AGENT_API_KEY="my-secret-key"
+$env:AGENT_API_KEY = "my-secret-key"
 
 # Run
 python app.py
 ```
 
 Test without key (should fail):
-```bash
-curl http://localhost:8000/ask -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"question": "Hello"}'
+```powershell
+Invoke-RestMethod -Method Post `
+  -Uri "http://localhost:8000/ask" `
+  -ContentType "application/json" `
+  -Body (@{ question = "Hello" } | ConvertTo-Json)
 # Expected: 401 Unauthorized
 ```
 
 Test with key (should work):
-```bash
-curl http://localhost:8000/ask -X POST \
-  -H "X-API-Key: my-secret-key" \
-  -H "Content-Type: application/json" \
-  -d '{"question": "Hello"}'
+```powershell
+Invoke-RestMethod -Method Post `
+  -Uri "http://localhost:8000/ask" `
+  -Headers @{ "X-API-Key" = "my-secret-key" } `
+  -ContentType "application/json" `
+  -Body (@{ question = "Hello" } | ConvertTo-Json)
 # Expected: 200 OK
 ```
 
@@ -175,9 +182,9 @@ Read [CODE_LAB.md](CODE_LAB.md) for detailed explanations and exercises.
 
 Go straight to Part 6 and build from scratch.
 
-```bash
+```powershell
 cd 06-lab-complete
-cat README.md
+Get-Content README.md
 ```
 
 **Time:** 1-2 hours  
@@ -197,9 +204,9 @@ Browse through each section's `develop/` and `production/` folders.
 ### Common Issues
 
 **"Port already in use"**
-```bash
-# Kill process on port 8000
-lsof -ti:8000 | xargs kill -9
+```powershell
+# Find and stop the process on port 8000
+Get-NetTCPConnection -LocalPort 8000 | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force }
 ```
 
 **"Docker daemon not running"**

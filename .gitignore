@@ -34,3 +34,15 @@ Thumbs.db
 # ── Docker volumes (local dev) ─────────────────────��──────
 data/
 volumes/
+
+# Local test output
+.pytest_tmp/
+**/.pytest_tmp/
+
+# Node / frontend tooling
+node_modules/
+**/node_modules/
+
+# Local logs
+logs/
+**/logs/

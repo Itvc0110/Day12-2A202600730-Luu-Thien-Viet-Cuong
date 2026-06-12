@@ -1,5 +1,5 @@
 # Day 12 — Deployment: Đưa Agent Lên Cloud
-
+# Họ Tên: Lưu Thiện Việt Cường - 2A202600730
 > **AICB-P1 · VinUniversity 2026**  
 > Repository thực hành đi kèm bài giảng Day 12.  
 > Mỗi phần có ví dụ **cơ bản** (hiểu concept) và **chuyên sâu** (production-ready).
@@ -107,3 +107,6 @@ Chúng tôi đã chuẩn bị đầy đủ tài liệu hướng dẫn:
 2. **Trong lab:** Làm theo từng Part, tham khảo [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
 3. **Gặp lỗi:** Xem [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 4. **Sau lab:** Nộp Part 6 Final Project để chấm điểm
+## Windows / PowerShell Note
+
+If you are on Windows PowerShell, use the PowerShell-friendly command blocks in `QUICK_START.md` and the section READMEs. They avoid the bash-only quoting and env-var syntax.
